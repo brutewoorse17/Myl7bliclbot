@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 # Load bot token and owner ID from environment variables
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-OWNER_ID = int(os.getenv("TELEGRAM_OWNER_ID"))
+OWNER_ID = 6472109162
 
 # Torrent download directory from environment variable
 DOWNLOAD_DIR = os.getenv("DOWNLOAD_DIR", "/path/to/download")
