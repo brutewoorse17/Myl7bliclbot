@@ -23,4 +23,4 @@ psutil
 pymongo
 pyrofork
 tgcrypto
-python-loadenv
+python-dotenv
