@@ -58,9 +58,10 @@ async def handle_magnet_link(client, message, magnet_link):
     download_path = os.path.join(DOWNLOAD_DIR, f"{user_id}_torrent")
 
     try:
-        # Include API_KEY and HASH_KEY if needed for external services like torrent trackers
+        # Log API_KEY and HASH_KEY usage if necessary (can be used for an external service)
         logger.info(f"Using API_KEY: {API_KEY}, HASH_KEY: {HASH_KEY}")
-        
+
+        # Command to download the torrent (aria2c is assumed to be installed)
         command = ['aria2c', '--dir', DOWNLOAD_DIR, magnet_link]
         logger.info(f"Starting torrent download: {command}")
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -69,6 +70,7 @@ async def handle_magnet_link(client, message, magnet_link):
         user_downloads[user_id] = {'process': process, 'message_id': message.message_id, 'download_path': download_path}
         await message.reply_text(f"Downloading torrent: {magnet_link}")
 
+        # Track download progress and update the user
         while process.poll() is None:
             await asyncio.sleep(5)  # Delay to avoid spamming
             await message.reply_text(f"Downloading {magnet_link}...")
@@ -76,7 +78,7 @@ async def handle_magnet_link(client, message, magnet_link):
         if process.returncode == 0:
             await message.reply_text(f"Torrent download complete. File saved to {download_path}.")
         else:
-            await message.reply_text(f"Error downloading torrent.")
+            await message.reply_text(f"Error downloading torrent. Please try again later.")
     except Exception as e:
         logger.error(f"Error handling magnet link: {e}")
         await message.reply_text("There was an error processing your torrent link.")
@@ -91,18 +93,31 @@ async def handle_direct_link(client, message, download_link):
 
         await message.reply_text(f"Downloading file: {file_name}...")
 
+        # Use requests to handle the file download
         with requests.get(download_link, stream=True) as r:
-            r.raise_for_status()
+            r.raise_for_status()  # Raise error for bad status codes
             with open(download_path, 'wb') as f:
-                for chunk in r.iter_content(chunk_size=8192):
+                total_size = int(r.headers.get('Content-Length', 0))
+                chunk_size = 8192
+                downloaded_size = 0
+
+                # Track progress and download the file in chunks
+                for chunk in r.iter_content(chunk_size=chunk_size):
                     if chunk:
                         f.write(chunk)
+                        downloaded_size += len(chunk)
+                        # Update the user on progress
+                        progress = (downloaded_size / total_size) * 100 if total_size else 0
+                        await message.reply_text(f"Downloading {file_name}: {progress:.2f}% complete.")
 
         await message.reply_text(f"Download of {file_name} completed! Choose a file type to upload.",
                                  reply_markup=build_file_type_keyboard(download_path))
     except requests.exceptions.RequestException as e:
         logger.error(f"Error downloading file: {e}")
-        await message.reply_text("Error while downloading the file.")
+        await message.reply_text("Error while downloading the file. Please try again.")
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        await message.reply_text("An unexpected error occurred while downloading the file.")
 
 # Build the inline keyboard with file type options
 def build_file_type_keyboard(file_path: str):
@@ -142,8 +157,12 @@ def get_file_of_type(file_path: str, file_type: str):
 
 # Upload file with progress tracking
 async def upload_file_with_progress(client, query, file_path):
-    await client.send_document(query.from_user.id, document=file_path)
-    await query.edit_message_text(f"Upload completed for {file_path}!")
+    try:
+        await client.send_document(query.from_user.id, document=file_path)
+        await query.edit_message_text(f"Upload completed for {file_path}!")
+    except Exception as e:
+        logger.error(f"Error uploading file: {e}")
+        await query.edit_message_text(f"Error uploading file: {file_path}. Please try again.")
 
 # Detect if a message related to a download has been deleted
 @Client.on_deleted_messages()
