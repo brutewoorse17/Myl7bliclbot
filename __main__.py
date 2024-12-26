@@ -11,13 +11,13 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # Telegram Bot Token
-TOKEN = 'YOUR_BOT_TOKEN'  # Replace with your actual Telegram bot token
+TOKEN = '7505846620:AAFvv-sFybGfFILS-dRC8l7ph_0rqIhDgRM'  # Replace with your actual Telegram bot token
 
 # Torrent download directory
 DOWNLOAD_DIR = '/path/to/download'
 
 # Bot Owner ID (replace with your actual Telegram user ID)
-OWNER_ID = 123456789  # Replace with your own Telegram user ID
+OWNER_ID = 6472109162  # Replace with your own Telegram user ID
 
 # Dictionary to track ongoing downloads
 user_downloads = {}
