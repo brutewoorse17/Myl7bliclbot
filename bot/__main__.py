@@ -4,20 +4,22 @@ import requests
 import subprocess
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from dotenv import load_dotenv
 import asyncio
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Initialize logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Telegram Bot Token (use environment variable for better security practice)
-TOKEN = "7505846620:AAFvv-sFybGfFILS-dRC8l7ph_0rqIhDgRM"
+# Load bot token and owner ID from environment variables
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+OWNER_ID = int(os.getenv("TELEGRAM_OWNER_ID"))
 
-# Torrent download directory
-DOWNLOAD_DIR = '/path/to/download'
-
-# Bot Owner ID (replace with your actual Telegram user ID)
-OWNER_ID = 6472109162
+# Torrent download directory from environment variable
+DOWNLOAD_DIR = os.getenv("DOWNLOAD_DIR", "/path/to/download")
 
 # Ensure download directory exists
 if not os.path.exists(DOWNLOAD_DIR):
