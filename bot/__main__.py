@@ -14,9 +14,11 @@ load_dotenv()
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Load bot token and owner ID from environment variables
+# Load bot token, owner ID, API Key, and Hash Key from environment variables
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 OWNER_ID = 6472109162
+API_KEY = os.getenv("API_KEY")  # New API Key
+HASH_KEY = os.getenv("HASH_KEY")  # New Hash Key
 
 # Torrent download directory from environment variable
 DOWNLOAD_DIR = os.getenv("DOWNLOAD_DIR", "/path/to/download")
@@ -56,6 +58,9 @@ async def handle_magnet_link(client, message, magnet_link):
     download_path = os.path.join(DOWNLOAD_DIR, f"{user_id}_torrent")
 
     try:
+        # Include API_KEY and HASH_KEY if needed for external services like torrent trackers
+        logger.info(f"Using API_KEY: {API_KEY}, HASH_KEY: {HASH_KEY}")
+        
         command = ['aria2c', '--dir', DOWNLOAD_DIR, magnet_link]
         logger.info(f"Starting torrent download: {command}")
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
