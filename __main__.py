@@ -11,7 +11,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # Telegram Bot Token (use environment variable)
-TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # Better security practice
+TOKEN = "7505846620:AAFvv-sFybGfFILS-dRC8l7ph_0rqIhDgRM"  # Better security practice
 
 # Torrent download directory
 DOWNLOAD_DIR = '/path/to/download'
