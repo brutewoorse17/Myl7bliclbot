@@ -22,4 +22,4 @@ pillow
 psutil
 pymongo
 pyrofork
-
+tgcrypto
