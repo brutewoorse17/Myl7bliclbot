@@ -2,8 +2,8 @@ import logging
 import os
 import requests
 import subprocess
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrofork import Client, filters
+from pyrofork.types import InlineKeyboardButton, InlineKeyboardMarkup
 import asyncio
 
 # Initialize logging
@@ -36,7 +36,7 @@ async def start(client, message):
     await message.reply_text("Hello! Send me a torrent magnet link or a direct download link, and I will handle it.")
 
 # Handle text messages (magnet or download link)
-@Client.on_message(filters.text & ~filters.command())
+@Client.on_message(filters.text & ~filters.command("mirror"))
 async def handle_torrent_or_link(client, message):
     user_id = message.from_user.id
     input_link = message.text
