@@ -2,8 +2,8 @@ import logging
 import os
 import requests
 import subprocess
-from pyrofork import Client, filters
-from pyrofork.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import asyncio
 
 # Initialize logging
